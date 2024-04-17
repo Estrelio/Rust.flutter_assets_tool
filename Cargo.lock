@@ -435,6 +435,7 @@ dependencies = [
  "clap_complete",
  "dotenvy",
  "env_logger",
+    "fs_extra",
  "log",
  "once_cell",
  "recase",
@@ -443,6 +444,7 @@ dependencies = [
  "serde_yml",
  "thiserror",
  "tokio",
+    "uuid",
 ]
 
 [[package]]
