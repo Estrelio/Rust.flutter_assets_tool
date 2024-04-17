@@ -2,7 +2,6 @@ pub mod migrate {
     use std::path::PathBuf;
     use std::sync::Arc;
 
-    use crate::core::asset_metadata::ParsePubspecYamlAssetsError;
     use crate::core::asset_usage::{ASSET_USAGE_REGEX_ASSET_PATH_GROUP_NAME, ASSETS_PREFIXED_ASSET_USAGE_REGEX};
     use crate::core::flutter::pubspec_yaml::ReadPubspecYamlFileError;
     use crate::core::util::fs::read_file_recursively;
@@ -13,8 +12,6 @@ pub mod migrate {
         ReadPubspecYamlFileError(#[from] ReadPubspecYamlFileError),
         #[error("{0}")]
         ReadFileRecursivelyError(#[from] read_file_recursively::ReadFileRecursivelyError),
-        #[error("{0}")]
-        ParsePubspecYamlAssetsError(#[from] ParsePubspecYamlAssetsError),
     }
 
     #[derive(Debug, thiserror::Error)]
@@ -28,7 +25,6 @@ pub mod migrate {
     pub async fn migrate_asset_gen_to_flutter_gen(
         flutter_project_path: &PathBuf,
     ) -> Result<(), MigrateAssetGenToFlutterGenError> {
-        let pubspec_yaml = crate::core::flutter::pubspec_yaml::read_pubspec_yaml_file(flutter_project_path)?;
         let scanning_directory = flutter_project_path
             // Dart project picks up the lib directory for compilation. Start scanning here for better
             // performance.
