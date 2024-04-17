@@ -6,6 +6,12 @@ release:
 lint:
   cargo clippy
 
+local-install: test
+  cargo install --path .
+
+uninstall:
+    cargo uninstall flutter_assets_tool
+
 bin:
   cargo run --bin bin -- arg1
 

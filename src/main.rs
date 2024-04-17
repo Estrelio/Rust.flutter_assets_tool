@@ -1,7 +1,6 @@
 use std::path::PathBuf;
 
 use clap::Parser;
-use log::log;
 use tokio::time::Instant;
 
 use flutter_assets_tool::commands;
@@ -35,6 +34,34 @@ async fn main() {
     }
 }
 
+async fn main_core() -> Result<(), anyhow::Error> {
+    let cli = Cli::parse();
+
+    logger_setup::setup_logger(cli.verbose);
+
+    match cli.command {
+        SubCommands::GenerateCompletions { shell } => {
+            Ok(commands::generate_completions::generate_completions(shell))
+        }
+        SubCommands::Migrate { command } => {
+            match command {
+                MigrateCommand::AssetGen => {
+                    commands::migrate::asset_gen::migrate::migrate_asset_gen_to_flutter_gen(
+                        &get_flutter_project_path(cli.flutter_project_path)?,
+                    ).await?;
+
+                    log::info!("Migration completed.");
+
+                    Ok(())
+                }
+            }
+        }
+        SubCommands::ListUnused { .. } => {
+            unimplemented!()
+        }
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
 enum MainError {
     #[error("Failed to get current directory: {err}")]
@@ -47,32 +74,10 @@ enum MainError {
     DartProjectNotFound {
         path: String,
     },
-    // #[error("Failed to read pubspec.yaml file. {0}")]
-    // ReadPubspecYamlFileError(#[from] expose_dart_class::core::dart::pubspec_yaml::ReadPubspecYamlFileError),
-}
-
-async fn main_core() {
-    let cli = Cli::parse();
-
-    logger_setup::setup_logger(cli.verbose);
-
-    match cli.command {
-        SubCommands::GenerateCompletions { shell } => {
-            commands::generate_completions::generate_completions(shell);
-        }
-        SubCommands::Migrate { command } => {
-            match command {
-                MigrateCommand::AssetGen => {
-                    
-                }
-            }
-        }
-        SubCommands::ListUnused { .. } => {}
-    }
 }
 
 
-fn get_dart_project_path(dart_project_path: Option<String>) -> Result<PathBuf, MainError> {
+fn get_flutter_project_path(dart_project_path: Option<String>) -> Result<PathBuf, MainError> {
     let dart_project_path = match dart_project_path.to_owned() {
         None => std::env::current_dir().map_err(|err| MainError::GetCurrentDirError { err })?,
         Some(dart_project_path) => {

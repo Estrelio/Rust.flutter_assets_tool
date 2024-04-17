@@ -429,6 +429,7 @@ checksum = "4742a071cd9694fc86f9fa1a08fa3e53d40cc899d7ee532295da2d085639fbc5"
 name = "flutter_assets_tool"
 version = "0.1.0"
 dependencies = [
+    "anyhow",
  "async-recursion",
  "chrono",
  "clap",

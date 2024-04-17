@@ -19,7 +19,7 @@ pub enum ParsePubspecYamlAssetsError {
 
 pub fn parse_pubspec_yaml_assets(
     flutter_project_path: &PathBuf,
-    assets: Vec<String>,
+    assets: &Vec<String>,
 ) -> Result<Vec<AssetMetadata>, ParsePubspecYamlAssetsError> {
     let mut asset_metadatum = Vec::new();
     for configured_asset in assets {
@@ -72,7 +72,7 @@ mod tests {
         // Act
         let result = parse_pubspec_yaml_assets(
             &flutter_project_path,
-            pubspec_yaml.flutter.assets,
+            &pubspec_yaml.flutter.assets,
         ).unwrap();
 
         // Assert
