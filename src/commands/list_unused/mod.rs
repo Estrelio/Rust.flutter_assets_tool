@@ -5,6 +5,8 @@ pub mod list_unused {
 
     #[derive(Debug, thiserror::Error)]
     pub enum ListUnusedError {
+        #[error("You have unused assets.")]
+        UnusedAssetsExistError,
         #[error("Failed to find unused assets. {source}")]
         FindUnusedAssetsError {
             #[from]
@@ -21,6 +23,7 @@ pub mod list_unused {
         flutter_project_path: &PathBuf,
         remove_unused: bool,
         ignore_path_bufs: Vec<PathBuf>,
+        exit_if_unused_exist: bool,
     ) -> Result<(), ListUnusedError> {
         let unused_assets: Vec<AssetMetadata> =
             crate::core::find_unused_assets::find_unused_assets::find_unused_assets(
@@ -45,6 +48,10 @@ pub mod list_unused {
         }
 
         if !remove_unused {
+            if exit_if_unused_exist {
+                return Err(ListUnusedError::UnusedAssetsExistError);
+            }
+            
             return Ok(());
         }
 

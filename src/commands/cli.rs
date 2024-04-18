@@ -47,5 +47,8 @@ pub enum SubCommands {
         /// pubspec.yaml flutter.assets section.
         #[clap(long = "ignore-path")]
         ignore_paths: Option<Vec<String>>,
+        
+        #[clap(long = "exit-if-unused-exist", default_value = "false")]
+        exit_if_unused_exist: bool,
     },
 }
