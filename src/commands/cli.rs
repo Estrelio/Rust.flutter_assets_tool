@@ -19,7 +19,6 @@ pub struct Cli {
     pub verbose: bool,
 }
 
-
 #[derive(Subcommand, Debug, Clone)]
 pub enum SubCommands {
     /// Generate completions for your shell.
@@ -38,5 +37,15 @@ pub enum SubCommands {
         /// Remove unused translations.
         #[clap(long, short, default_value = "false")]
         remove_unused: bool,
+
+        /// Paths to ignore when searching for unused translations.
+        ///
+        /// If the specified path is a directory, ignore all files in the directory; otherwise,
+        /// ignore the specified file.
+        ///
+        /// Make sure that you specify the directory path exactly how you specify it in your
+        /// pubspec.yaml flutter.assets section.
+        #[clap(long = "ignore-path")]
+        ignore_paths: Option<Vec<String>>,
     },
 }

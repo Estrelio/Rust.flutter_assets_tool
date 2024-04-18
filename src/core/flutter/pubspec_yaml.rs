@@ -7,6 +7,8 @@ pub struct PubspecYaml {
     /// The Dart project name.
     pub name: String,
 
+    pub flutter_gen: FlutterGen,
+
     pub flutter: Flutter,
 }
 
@@ -33,6 +35,7 @@ pub struct FlutterGenAssetsOutputs {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
 pub enum FlutterGenAssetsOutputsStyle {
     SnakeCase,
     CamelCase,
