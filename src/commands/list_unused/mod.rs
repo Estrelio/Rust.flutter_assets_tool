@@ -50,6 +50,7 @@ pub mod list_unused {
 
         crate::commands::list_unused::remove_unused_asset::remove_unused_assets(unused_assets)
             .await?;
+        log::info!("🧹Unused assets have been removed.");
 
         Ok(())
     }
