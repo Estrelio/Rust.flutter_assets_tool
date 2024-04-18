@@ -76,28 +76,71 @@ mod tests {
         let pubspec_yaml = pubspec_yaml::read_pubspec_yaml_file(&flutter_project_path).unwrap();
 
         // Act
-        let result =
+        let mut result =
             parse_pubspec_yaml_assets(&flutter_project_path, &pubspec_yaml.flutter.assets).unwrap();
 
         // Assert
-        let assets_image_directory = PathBuf::from("assets/images/");
-        assert_eq!(
-            result,
-            vec![
-                AssetMetadata::new(
-                    flutter_project_path
-                        .join(&assets_image_directory)
-                        .join("coming_soon_1.png"),
-                    assets_image_directory.to_owned(),
-                ),
-                AssetMetadata::new(
-                    flutter_project_path
-                        .join(&assets_image_directory)
-                        .join("coming_soon1.png"),
-                    assets_image_directory.to_owned(),
-                ),
-            ]
-        );
+        let assets_images_directory = PathBuf::from("assets/images/");
+        let assets_fonts_directory = PathBuf::from("assets/fonts/");
+        let mut expected_result = vec![
+            AssetMetadata::new(
+                flutter_project_path
+                    .join(&assets_fonts_directory)
+                    .join("Poppins-Bold-700.ttf"),
+                assets_fonts_directory.to_owned(),
+            ),
+            AssetMetadata::new(
+                flutter_project_path
+                    .join(&assets_fonts_directory)
+                    .join("Poppins-Medium-500.ttf"),
+                assets_fonts_directory.to_owned(),
+            ),
+            AssetMetadata::new(
+                flutter_project_path
+                    .join(&assets_fonts_directory)
+                    .join("Poppins-Regular-400.ttf"),
+                assets_fonts_directory.to_owned(),
+            ),
+            AssetMetadata::new(
+                flutter_project_path
+                    .join(&assets_fonts_directory)
+                    .join("Poppins-SemiBold-600.ttf"),
+                assets_fonts_directory.to_owned(),
+            ),
+            AssetMetadata::new(
+                flutter_project_path
+                    .join(&assets_images_directory)
+                    .join("coming_soon_1.png"),
+                assets_images_directory.to_owned(),
+            ),
+            AssetMetadata::new(
+                flutter_project_path
+                    .join(&assets_images_directory)
+                    .join("coming_soon1.png"),
+                assets_images_directory.to_owned(),
+            ),
+            AssetMetadata::new(
+                flutter_project_path
+                    .join(&assets_images_directory)
+                    .join("coming_soon_ignored.png"),
+                assets_images_directory.to_owned(),
+            ),
+        ];
+        {
+            result.sort_by_key(|asset_metadata| {
+                asset_metadata
+                    .get_asset_path()
+                    .to_string_lossy()
+                    .to_string()
+            });
+            expected_result.sort_by_key(|asset_metadata| {
+                asset_metadata
+                    .get_asset_path()
+                    .to_string_lossy()
+                    .to_string()
+            });
+        }
+        assert_eq!(result, expected_result);
 
         // Cleanup
         std::fs::remove_dir_all(&test_artifact_directory).unwrap();

@@ -2,7 +2,6 @@ pub mod flutter_assets_tool {
     use std::path::PathBuf;
 
     use serde::{Deserialize, Serialize};
-    use crate::commands;
 
     #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
     pub struct FlutterAssetsTool {

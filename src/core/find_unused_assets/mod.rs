@@ -67,7 +67,7 @@ pub mod find_unused_assets {
                         asset_metadatum.clone(),
                         join_handles.clone(),
                         &path,
-                        &pubspec_yaml.flutter_gen.assets.outputs.style,
+                        &pubspec_yaml.flutter_gen.assets.outputs,
                     ).await.map_err(
                         |err| read_file_recursively::ReadFileRecursivelyError::OtherError {
                             source: Box::new(err),
@@ -188,8 +188,8 @@ mod print_unused_assets_in_file_if_qualified {
     use tokio::sync::{Mutex, RwLock};
 
     use crate::core::asset_metadata::asset_metadata::AssetMetadata;
-    use crate::core::asset_usage::{ASSET_USAGE_REGEX, ASSET_USAGE_REGEX_ASSET_PATH_GROUP_NAME};
-    use crate::core::flutter::pubspec_yaml::FlutterGenAssetsOutputsStyle;
+    use crate::core::asset_usage::{ASSET_USAGE_REGEX_ASSET_PATH_GROUP_NAME, get_asset_usage_regex};
+    use crate::core::flutter::pubspec_yaml::FlutterGenAssetsOutputs;
 
     #[derive(Debug, thiserror::Error)]
     pub enum RemoveUnusedAssetsInStoreIfQualifiedError {
@@ -205,7 +205,7 @@ mod print_unused_assets_in_file_if_qualified {
             >,
         >,
         file_path: &PathBuf,
-        flutter_gen_assets_outputs_style: &FlutterGenAssetsOutputsStyle,
+        flutter_gen_assets_outputs: &FlutterGenAssetsOutputs,
     ) -> Result<(), RemoveUnusedAssetsInStoreIfQualifiedError> {
         let file_content = tokio::fs::read_to_string(&file_path)
             .await
@@ -213,7 +213,7 @@ mod print_unused_assets_in_file_if_qualified {
 
         let handle = tokio::spawn(drop_used_assets(
             asset_metadatum,
-            flutter_gen_assets_outputs_style.to_owned(),
+            flutter_gen_assets_outputs.to_owned(),
             file_content,
         ));
 
@@ -224,10 +224,10 @@ mod print_unused_assets_in_file_if_qualified {
 
     async fn drop_used_assets(
         asset_metadatum: Arc<RwLock<Vec<AssetMetadata>>>,
-        flutter_gen_assets_outputs_style: FlutterGenAssetsOutputsStyle,
+        flutter_gen_assets_outputs: FlutterGenAssetsOutputs,
         file_content: String,
     ) -> Result<(), RemoveUnusedAssetsInStoreIfQualifiedError> {
-        let used_assets = ASSET_USAGE_REGEX
+        let used_assets = get_asset_usage_regex(&flutter_gen_assets_outputs.class_name)
             .captures_iter(&file_content)
             .map(|capture| {
                 capture
@@ -243,7 +243,7 @@ mod print_unused_assets_in_file_if_qualified {
             for used_asset in used_assets {
                 write_guard.retain(|asset_metadata| {
                     asset_metadata
-                        .compute_dart_usage_syntax(&flutter_gen_assets_outputs_style)
+                        .compute_dart_usage_syntax(&flutter_gen_assets_outputs.style)
                         .unwrap()
                         != *used_asset
                 });
@@ -255,6 +255,8 @@ mod print_unused_assets_in_file_if_qualified {
 
     #[cfg(test)]
     mod tests {
+        use crate::core::flutter::pubspec_yaml::FlutterGenAssetsOutputsStyle;
+
         use super::*;
 
         #[tokio::test]
@@ -304,7 +306,10 @@ mod print_unused_assets_in_file_if_qualified {
             // Act
             let result = drop_used_assets(
                 asset_metadatum.clone(),
-                flutter_gen_assets_outputs_style,
+                FlutterGenAssetsOutputs {
+                    class_name: "R".to_string(),
+                    style: flutter_gen_assets_outputs_style,
+                },
                 file_content,
             )
             .await;
@@ -357,7 +362,10 @@ mod print_unused_assets_in_file_if_qualified {
             // Act
             let result = drop_used_assets(
                 asset_metadatum.clone(),
-                flutter_gen_assets_outputs_style,
+                FlutterGenAssetsOutputs {
+                    class_name: "R".to_string(),
+                    style: flutter_gen_assets_outputs_style,
+                },
                 file_content,
             )
             .await;

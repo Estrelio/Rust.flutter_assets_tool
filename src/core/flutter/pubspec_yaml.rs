@@ -31,6 +31,7 @@ pub struct FlutterGenAssets {
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct FlutterGenAssetsOutputs {
     pub style: FlutterGenAssetsOutputsStyle,
+    #[serde(default = "default_class_name")]
     pub class_name: String,
 }
 
@@ -77,4 +78,8 @@ pub fn read_pubspec_yaml_file(
         .map_err(|err| ReadPubspecYamlFileError::ParseFileError { source: err })?;
 
     Ok(pubspec_yaml)
+}
+
+fn default_class_name() -> String {
+    "Assets".to_owned()
 }

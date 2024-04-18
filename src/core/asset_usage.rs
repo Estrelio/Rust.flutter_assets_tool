@@ -2,10 +2,16 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 
 pub const ASSET_USAGE_REGEX_ASSET_PATH_GROUP_NAME: &str = "assetPath";
-pub static ASSET_USAGE_REGEX: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r#"R(\s*)\.(\s*)(?<assetPath>\w+)\."#).unwrap());
 pub static ASSETS_PREFIXED_ASSET_USAGE_REGEX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r#"R(\s*)\.(\s*)assets_(?<assetPath>\w+)"#).unwrap());
+
+pub fn get_asset_usage_regex(class_name: &str) -> Regex {
+    Regex::new(&format!(
+        "{class_name}{regex_text}",
+        regex_text = r#"(\s*)\.(\s*)(?<assetPath>\w+)\."#,
+    ))
+    .unwrap()
+}
 
 #[cfg(test)]
 mod tests {
@@ -31,7 +37,7 @@ mod tests {
         .to_string();
 
         // Act
-        let matches: Vec<_> = ASSET_USAGE_REGEX
+        let matches: Vec<_> = get_asset_usage_regex("R")
             .captures_iter(code.as_str())
             .map(|capture| {
                 capture
