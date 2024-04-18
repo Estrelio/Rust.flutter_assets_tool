@@ -8,7 +8,7 @@ pub static ASSETS_PREFIXED_ASSET_USAGE_REGEX: Lazy<Regex> =
 pub fn get_asset_usage_regex(class_name: &str) -> Regex {
     Regex::new(&format!(
         "{class_name}{regex_text}",
-        regex_text = r#"(\s*)\.(\s*)(?<assetPath>\w+)\."#,
+        regex_text = r#"(\s*)\.(\s*)(?<assetPath>\w+)\.path"#,
     ))
     .unwrap()
 }
