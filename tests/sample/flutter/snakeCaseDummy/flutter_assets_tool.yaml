@@ -1,0 +1,3 @@
+list_unused_ignore_paths:
+  - assets/fonts/
+  - assets/images/coming_soon_ignored.png

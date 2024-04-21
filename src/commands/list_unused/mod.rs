@@ -51,7 +51,7 @@ pub mod list_unused {
             if exit_if_unused_exist {
                 return Err(ListUnusedError::UnusedAssetsExistError);
             }
-            
+
             return Ok(());
         }
 

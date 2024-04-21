@@ -154,6 +154,7 @@ mod tests {
             .unwrap();
 
         // Assert
+
         assert_eq!(usage_syntax, "images.image1");
     }
 

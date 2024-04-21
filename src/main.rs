@@ -59,7 +59,24 @@ async fn main_core() -> Result<(), anyhow::Error> {
                 commands::migrate::asset_gen::migrate::migrate_asset_gen_to_flutter_gen(
                     &flutter_project_path,
                 )
-                    .await?;
+                .await?;
+
+                log::info!("Migration completed.");
+
+                Ok(())
+            }
+            MigrateCommand::FlutterGen {
+                ignore_paths,
+                previous_style,
+            } => {
+                let ignore_path_bufs =
+                    compute_ignore_path_bufs(flutter_assets_tool_file_result, ignore_paths)?;
+                commands::migrate::flutter_gen::migrate::migrate_flutter_gen_style(
+                    &flutter_project_path,
+                    ignore_path_bufs,
+                    previous_style,
+                )
+                .await?;
 
                 log::info!("Migration completed.");
 
@@ -68,7 +85,8 @@ async fn main_core() -> Result<(), anyhow::Error> {
         },
         SubCommands::ListUnused {
             remove_unused,
-            ignore_paths, exit_if_unused_exist,
+            ignore_paths,
+            exit_if_unused_exist,
         } => {
             let ignore_path_bufs =
                 compute_ignore_path_bufs(flutter_assets_tool_file_result, ignore_paths)?;
@@ -78,7 +96,7 @@ async fn main_core() -> Result<(), anyhow::Error> {
                 ignore_path_bufs,
                 exit_if_unused_exist,
             )
-                .await?;
+            .await?;
 
             Ok(())
         }

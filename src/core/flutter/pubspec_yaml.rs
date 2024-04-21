@@ -30,12 +30,22 @@ pub struct FlutterGenAssets {
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct FlutterGenAssetsOutputs {
+    /// The style of the generated localization syntax.
+    ///
+    /// See [`FlutterGenAssetsOutputsStyle`] for more information.
     pub style: FlutterGenAssetsOutputsStyle,
+
+    /// The class name of the generated localization class.
     #[serde(default = "default_class_name")]
     pub class_name: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+/// The style of the generated localization syntax.
+///
+/// - [`SnakeCase`] will generate the syntax in snake_case. Example: `R.assets.image_name`.
+/// - [`CamelCase`] will generate the syntax in camelCase. Example: `R.assets.imageName`.
+/// - [`DotDelimited`] will generate the syntax in dot.delimited. Example: `R.assets.image.name`.
+#[derive(clap::ValueEnum, Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "kebab-case")]
 pub enum FlutterGenAssetsOutputsStyle {
     SnakeCase,
