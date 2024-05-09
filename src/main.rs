@@ -7,7 +7,7 @@ use tokio::time::Instant;
 
 use flutter_assets_tool::commands;
 use flutter_assets_tool::commands::cli::{Cli, SubCommands};
-use flutter_assets_tool::commands::list_unused::list_unused::ListUnusedError;
+use flutter_assets_tool::commands::list_unused::ListUnusedError;
 use flutter_assets_tool::commands::migrate::MigrateCommand;
 use flutter_assets_tool::core::configuration;
 use flutter_assets_tool::core::configuration::flutter_assets_tool::{
@@ -55,14 +55,15 @@ async fn main_core() -> Result<(), anyhow::Error> {
 
     match cli.command {
         SubCommands::GenerateCompletions { shell } => {
-            Ok(commands::generate_completions::generate_completions(shell))
+            commands::generate_completions::generate_completions(shell);
+            Ok(())
         }
         SubCommands::Migrate { command } => match command {
             MigrateCommand::AssetGen => {
                 commands::migrate::asset_gen::migrate::migrate_asset_gen_to_flutter_gen(
                     &flutter_project_path,
                 )
-                    .await?;
+                .await?;
 
                 log::info!("Migration completed.");
 
@@ -79,7 +80,7 @@ async fn main_core() -> Result<(), anyhow::Error> {
                     ignore_path_bufs,
                     previous_style,
                 )
-                    .await?;
+                .await?;
 
                 log::info!("Migration completed.");
 
@@ -93,13 +94,13 @@ async fn main_core() -> Result<(), anyhow::Error> {
         } => {
             let ignore_path_bufs =
                 compute_ignore_path_bufs(flutter_assets_tool_file_result, ignore_paths)?;
-            let result = commands::list_unused::list_unused::list_unused(
+            let result = commands::list_unused::list_unused(
                 &flutter_project_path,
                 remove_unused,
                 ignore_path_bufs,
                 exit_if_unused_exist,
             )
-                .await;
+            .await;
             match result {
                 Ok(_) => {}
                 Err(err) => {
@@ -126,7 +127,7 @@ fn compute_ignore_path_bufs(
                     .get_ignore_paths()
                     .unwrap_or_default()
                     .into_iter()
-                    .map(|path| PathBuf::from(path))
+                    .map(PathBuf::from)
                     .collect();
                 Ok(path_bufs)
             }
@@ -140,12 +141,7 @@ fn compute_ignore_path_bufs(
                 }
             },
         },
-        Some(ignore_paths) => {
-            return Ok(ignore_paths
-                .into_iter()
-                .map(|path| PathBuf::from(path))
-                .collect());
-        }
+        Some(ignore_paths) => Ok(ignore_paths.into_iter().map(PathBuf::from).collect()),
     }
 }
 

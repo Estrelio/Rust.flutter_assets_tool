@@ -1,5 +1,5 @@
 pub mod flutter_assets_tool {
-    use std::path::PathBuf;
+    use std::path::Path;
 
     use serde::{Deserialize, Serialize};
 
@@ -36,10 +36,10 @@ pub mod flutter_assets_tool {
     const FLUTTER_ASSETS_TOOL_FILE_NAME: &str = "flutter_assets_tool.yaml";
 
     pub fn read_flutter_assets_tool_file(
-        directory: &PathBuf,
+        directory: &Path,
     ) -> Result<FlutterAssetsTool, ReadFlutterAssetsToolFileError> {
         let flutter_assets_tool_file_path = directory.join(FLUTTER_ASSETS_TOOL_FILE_NAME);
-        let flutter_assets_tool_file = std::fs::File::open(&flutter_assets_tool_file_path)?;
+        let flutter_assets_tool_file = std::fs::File::open(flutter_assets_tool_file_path)?;
         let flutter_assets_tool: FlutterAssetsTool =
             serde_yml::from_reader(flutter_assets_tool_file)?;
 

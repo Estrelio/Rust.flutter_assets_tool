@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 
@@ -73,9 +73,7 @@ const PUBSPEC_YAML_FILE_NAME: &str = "pubspec.yaml";
 /// * `directory`: The directory where the pubspec.yaml file is located.
 ///
 /// returns: Result<PubspecYaml, <ReadPubspecYamlFileError>>
-pub fn read_pubspec_yaml_file(
-    directory: &PathBuf,
-) -> Result<PubspecYaml, ReadPubspecYamlFileError> {
+pub fn read_pubspec_yaml_file(directory: &Path) -> Result<PubspecYaml, ReadPubspecYamlFileError> {
     let pubspec_yaml_file_path = directory.join(PUBSPEC_YAML_FILE_NAME);
     let pubspec_yaml_file = std::fs::File::open(&pubspec_yaml_file_path).map_err(|err| {
         ReadPubspecYamlFileError::OpenFileError {

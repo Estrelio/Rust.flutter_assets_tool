@@ -1,5 +1,5 @@
 pub mod migrate {
-    use std::path::PathBuf;
+    use std::path::{Path, PathBuf};
     use std::sync::Arc;
 
     use crate::core::asset_usage::{
@@ -26,9 +26,9 @@ pub mod migrate {
     }
 
     pub async fn migrate_asset_gen_to_flutter_gen(
-        flutter_project_path: &PathBuf,
+        flutter_project_path: &Path,
     ) -> Result<(), MigrateAssetGenToFlutterGenError> {
-        let scanning_directory = get_flutter_project_lib_path(&flutter_project_path);
+        let scanning_directory = get_flutter_project_lib_path(flutter_project_path);
 
         read_file_recursively::read_file_recursively(
             &scanning_directory,
@@ -60,9 +60,9 @@ pub mod migrate {
         Ok(())
     }
 
-    fn migrate_usage(file_content: &String) -> String {
+    fn migrate_usage(file_content: &str) -> String {
         ASSETS_PREFIXED_ASSET_USAGE_REGEX
-            .replace_all(&file_content, |captures: &regex::Captures| -> String {
+            .replace_all(file_content, |captures: &regex::Captures| -> String {
                 let asset_name = captures
                     .name(ASSET_USAGE_REGEX_ASSET_PATH_GROUP_NAME)
                     .unwrap()

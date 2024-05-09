@@ -1,8 +1,8 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-use crate::core::asset_metadata::asset_metadata::AssetMetadata;
+pub use core::*;
 
-pub mod asset_metadata;
+mod core;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ParsePubspecYamlAssetsError {
@@ -16,13 +16,13 @@ pub enum ParsePubspecYamlAssetsError {
 }
 
 pub fn parse_pubspec_yaml_assets(
-    flutter_project_path: &PathBuf,
+    flutter_project_path: &Path,
     assets: &Vec<String>,
 ) -> Result<Vec<AssetMetadata>, ParsePubspecYamlAssetsError> {
     let mut asset_metadatum = Vec::new();
     for configured_asset in assets {
-        let located_directory = flutter_project_path.join(&configured_asset);
-        for dir_entry in (&located_directory).read_dir().map_err(|err| {
+        let located_directory = flutter_project_path.join(configured_asset);
+        for dir_entry in located_directory.read_dir().map_err(|err| {
             ParsePubspecYamlAssetsError::ReadDirectoryError {
                 path: located_directory.to_owned(),
                 source: err,

@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 use regex::{Regex, RegexSet};
 
-use crate::core::asset_metadata::asset_metadata::{AssetMetadata, AssetMetadataError};
+use crate::core::asset_metadata::{AssetMetadata, AssetMetadataError};
 use crate::core::flutter::pubspec_yaml::FlutterGenAssetsOutputsStyle;
 
 pub const ASSET_USAGE_REGEX_ASSET_PATH_GROUP_NAME: &str = "assetPath";
@@ -26,7 +26,7 @@ pub enum ComputeAssetUsageRegexSetError {
 
 pub fn compute_asset_usage_regex_set_group(
     class_name: &str,
-    asset_metadatum: &Vec<AssetMetadata>,
+    asset_metadatum: &[AssetMetadata],
     style: FlutterGenAssetsOutputsStyle,
 ) -> Result<AssetUsageRegexSetGroup, ComputeAssetUsageRegexSetError> {
     let pattern_results = asset_metadatum

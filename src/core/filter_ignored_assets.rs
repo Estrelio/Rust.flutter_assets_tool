@@ -1,16 +1,16 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-use crate::core::asset_metadata::asset_metadata::AssetMetadata;
+use crate::core::asset_metadata::AssetMetadata;
 
 pub fn filter_ignored_assets(
-    flutter_project_path: &PathBuf,
+    flutter_project_path: &Path,
     asset_metadatum: Vec<AssetMetadata>,
     ignore_path_bufs: Vec<PathBuf>,
 ) -> Vec<AssetMetadata> {
     let mut asset_metadatum_clone = asset_metadatum.clone();
     for ignore_path_buf in ignore_path_bufs {
         {
-            let absolute_ignore_path_buf = flutter_project_path.join(ignore_path_buf.to_owned());
+            let absolute_ignore_path_buf = flutter_project_path.join(&ignore_path_buf);
             if absolute_ignore_path_buf.is_file() {
                 asset_metadatum_clone.retain(|asset_metadata| {
                     asset_metadata.get_asset_path() != &absolute_ignore_path_buf

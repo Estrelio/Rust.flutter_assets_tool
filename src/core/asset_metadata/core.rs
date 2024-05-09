@@ -74,7 +74,7 @@ impl AssetMetadata {
                 let relative_asset_path = relative_asset_path.to_string_lossy().to_string();
                 if !relative_asset_path.is_empty() {
                     result.push_str(&ReCase::new(relative_asset_path).snake_case());
-                    result.push_str("_");
+                    result.push('_');
                 }
                 result.push_str(&file_stem_recase.snake_case());
                 Ok(result)
@@ -96,7 +96,7 @@ impl AssetMetadata {
                 let relative_asset_path = relative_asset_path.to_string_lossy().to_string();
                 if !relative_asset_path.is_empty() {
                     result.push_str(&ReCase::new(relative_asset_path).dot_case());
-                    result.push_str(".");
+                    result.push('.');
                 }
                 result.push_str(&file_stem_recase.camel_case());
                 Ok(result)
