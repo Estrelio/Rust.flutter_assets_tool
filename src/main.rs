@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::process::exit;
 
 use anyhow::Error;
 use clap::Parser;
@@ -6,6 +7,7 @@ use tokio::time::Instant;
 
 use flutter_assets_tool::commands;
 use flutter_assets_tool::commands::cli::{Cli, SubCommands};
+use flutter_assets_tool::commands::list_unused::list_unused::ListUnusedError;
 use flutter_assets_tool::commands::migrate::MigrateCommand;
 use flutter_assets_tool::core::configuration;
 use flutter_assets_tool::core::configuration::flutter_assets_tool::{
@@ -29,13 +31,14 @@ async fn main() {
         }
         Err(err) => {
             log::error!(
-                "{err}\n\n{chain}",
+                "{err}\n\n{chain}\n\n{backtrace}",
                 err = err,
                 chain = err
                     .chain()
                     .map(|err| err.to_string())
                     .collect::<Vec<String>>()
-                    .join("\n")
+                    .join("\n"),
+                backtrace = err.backtrace()
             );
         }
     }
@@ -59,7 +62,7 @@ async fn main_core() -> Result<(), anyhow::Error> {
                 commands::migrate::asset_gen::migrate::migrate_asset_gen_to_flutter_gen(
                     &flutter_project_path,
                 )
-                .await?;
+                    .await?;
 
                 log::info!("Migration completed.");
 
@@ -76,7 +79,7 @@ async fn main_core() -> Result<(), anyhow::Error> {
                     ignore_path_bufs,
                     previous_style,
                 )
-                .await?;
+                    .await?;
 
                 log::info!("Migration completed.");
 
@@ -90,13 +93,22 @@ async fn main_core() -> Result<(), anyhow::Error> {
         } => {
             let ignore_path_bufs =
                 compute_ignore_path_bufs(flutter_assets_tool_file_result, ignore_paths)?;
-            commands::list_unused::list_unused::list_unused(
+            let result = commands::list_unused::list_unused::list_unused(
                 &flutter_project_path,
                 remove_unused,
                 ignore_path_bufs,
                 exit_if_unused_exist,
             )
-            .await?;
+                .await;
+            match result {
+                Ok(_) => {}
+                Err(err) => {
+                    if let ListUnusedError::UnusedAssetsExistError = err {
+                        exit(1);
+                    }
+                    return Err(Error::new(err));
+                }
+            }
 
             Ok(())
         }

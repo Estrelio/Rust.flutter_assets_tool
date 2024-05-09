@@ -30,7 +30,7 @@ pub mod list_unused {
                 flutter_project_path,
                 ignore_path_bufs,
             )
-            .await?;
+                .await?;
 
         if !unused_assets.is_empty() {
             log::info!("Unused assets:");
@@ -45,13 +45,12 @@ pub mod list_unused {
                 );
             }
             log::info!("---------------------------------------------------");
-        }
-
-        if !remove_unused {
             if exit_if_unused_exist {
                 return Err(ListUnusedError::UnusedAssetsExistError);
             }
+        }
 
+        if !remove_unused {
             return Ok(());
         }
 
@@ -60,6 +59,52 @@ pub mod list_unused {
         log::info!("🧹Unused assets have been removed.");
 
         Ok(())
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use crate::core::testing_util::artifact::get_test_artifact_directory;
+
+        use super::*;
+
+        #[tokio::test]
+        async fn list_unused_return_unused_assets_exist_error_when_requested() {
+            // Arrange
+            let test_artifact_directory = get_test_artifact_directory().unwrap();
+            let unique_id = uuid::Uuid::new_v4();
+            let test_artifact_directory = test_artifact_directory.join(unique_id.to_string());
+            std::fs::create_dir_all(&test_artifact_directory).unwrap();
+            fs_extra::dir::copy(
+                std::env::current_dir()
+                    .unwrap()
+                    .join("tests/sample/flutter/dummy"),
+                &test_artifact_directory,
+                &fs_extra::dir::CopyOptions::new(),
+            )
+                .unwrap();
+            let flutter_project_path = test_artifact_directory.join("dummy");
+            let ignore_path_bufs: Vec<PathBuf> = Vec::new();
+            let exit_if_unused_exist = true;
+
+            // Act
+            let result = list_unused(
+                &flutter_project_path,
+                false,
+                ignore_path_bufs,
+                exit_if_unused_exist,
+            ).await;
+
+            // Assert
+            assert!(result.is_err());
+            match result.unwrap_err() {
+                ListUnusedError::UnusedAssetsExistError => {
+                    assert!(true)
+                }
+                ListUnusedError::FindUnusedAssetsError { .. } | ListUnusedError::RemoveUnusedAssetsError { .. } => {
+                    assert!(false)
+                }
+            }
+        }
     }
 }
 
