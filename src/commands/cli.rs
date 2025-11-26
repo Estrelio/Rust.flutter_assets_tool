@@ -33,13 +33,13 @@ pub enum SubCommands {
         #[command(subcommand)]
         command: MigrateCommand,
     },
-    /// List unused translations.
+    /// List unused assets.
     ListUnused {
-        /// Remove unused translations.
+        /// Remove unused assets.
         #[clap(long, short, default_value = "false")]
         remove_unused: bool,
 
-        /// Paths to ignore when searching for unused translations.
+        /// Paths to ignore when searching for unused assets.
         ///
         /// If the specified path is a directory, ignore all files in the directory; otherwise,
         /// ignore the specified file.
