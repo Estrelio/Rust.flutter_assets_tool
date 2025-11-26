@@ -138,7 +138,7 @@ fn migrate_asset_core(
         .replace_all(&file_content, |_captures: &regex::Captures| -> String {
             let asset_usage_syntax = asset_metadata.compute_dart_usage_syntax(to_style).unwrap();
             format!(
-                "{class_name}.{asset_usage_syntax}.path",
+                "{class_name}.{asset_usage_syntax}",
                 class_name = class_name
             )
         })

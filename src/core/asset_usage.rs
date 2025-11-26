@@ -11,7 +11,7 @@ pub static ASSETS_PREFIXED_ASSET_USAGE_REGEX: Lazy<Regex> =
 pub fn get_asset_usage_regex(class_name: &str) -> Regex {
     Regex::new(&format!(
         "{class_name}{regex_text}",
-        regex_text = r#"(\s*)\.(\s*)(?<assetPath>\w+)\.path"#,
+        regex_text = r#"(\s*)\.(\s*)(?<assetPath>\w+)"#,
     ))
     .unwrap()
 }
@@ -37,7 +37,7 @@ pub fn compute_asset_usage_regex_set_group(
                 .to_string();
             Ok((
                 asset_metadata.to_owned(),
-                format!("{class_name}.{asset_name}.path",)
+                format!("{class_name}.{asset_name}",)
                     .split('.')
                     .collect::<Vec<&str>>()
                     .join(r#"(\s*)\.(\s*)"#),
@@ -81,11 +81,11 @@ mod tests {
         let code = format!(
             "
             final List<String> images = [
-                R.{image_1}.path,
+                R.{image_1},
                 R
-                    .{image_2}.path,
+                    .{image_2},
                 R.
-                    {image_3}.path,
+                    {image_3},
             ];
         "
         )
@@ -177,11 +177,11 @@ mod tests {
         let code = format!(
             "
             final List<String> images = [
-                R.{image_1}.path,
+                R.{image_1},
                 R
-                    .{image_2}.path,
+                    .{image_2},
                 R.
-                    {image_3}.path,
+                    {image_3},
             ];
 ",
             image_1 = image_1_usage_syntax,
