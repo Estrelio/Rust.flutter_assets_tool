@@ -1,6 +1,7 @@
 use std::future::Future;
 use std::path::PathBuf;
 use std::sync::Arc;
+use async_recursion::async_recursion;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ReadFileRecursivelyError {
@@ -20,7 +21,7 @@ pub enum ReadFileRecursivelyError {
 /// Read the file recursively.
 ///
 /// When a file is encountered, the `f` function will be called.
-#[async_recursion::async_recursion]
+#[async_recursion]
 pub async fn read_file_recursively<F, Fut>(
     path: &PathBuf,
     f: Arc<F>,
