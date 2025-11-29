@@ -5,6 +5,12 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/sample/flutter/dummy/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/sample/flutter/dummy/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/sample/flutter/dummy/build" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/sample/flutter/snakeCaseDummy/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/sample/flutter/snakeCaseDummy/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/sample/flutter/snakeCaseDummy/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
