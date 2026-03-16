@@ -105,6 +105,7 @@ async fn main_core() -> Result<(), anyhow::Error> {
                 Ok(_) => {}
                 Err(err) => {
                     if let ListUnusedError::UnusedAssetsExistError = err {
+                        log::error!("{}", err.to_string());
                         exit(1);
                     }
                     return Err(Error::new(err));

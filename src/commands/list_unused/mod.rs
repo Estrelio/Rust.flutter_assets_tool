@@ -4,7 +4,7 @@ use crate::core::asset_metadata::AssetMetadata;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ListUnusedError {
-    #[error("You have unused assets.")]
+    #[error("You have unused assets. \nYou can run flutter_assets_tool list-unused --remove-unused to remove them.")]
     UnusedAssetsExistError,
     #[error("Failed to find unused assets. {source}")]
     FindUnusedAssetsError {
