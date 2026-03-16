@@ -55,7 +55,7 @@ impl AssetMetadata {
             .to_string_lossy()
             .to_string();
 
-        let file_stem_recase = ReCase::new(file_stem);
+        let file_stem_recase = ReCase::new(&file_stem);
 
         // We need to separate the directory name from the file name because ReCase
         // considers number as a separate word.
@@ -73,7 +73,7 @@ impl AssetMetadata {
 
                 let relative_asset_path = relative_asset_path.to_string_lossy().to_string();
                 if !relative_asset_path.is_empty() {
-                    result.push_str(&ReCase::new(relative_asset_path).snake_case());
+                    result.push_str(&ReCase::new(&relative_asset_path).snake_case());
                     result.push('_');
                 }
                 result.push_str(&file_stem_recase.snake_case());
@@ -83,7 +83,7 @@ impl AssetMetadata {
                 let relative_asset_path = relative_asset_path.to_string_lossy().to_string();
                 if !relative_asset_path.is_empty() {
                     let mut result = String::new();
-                    result.push_str(&ReCase::new(relative_asset_path).camel_case());
+                    result.push_str(&ReCase::new(&relative_asset_path).camel_case());
                     result.push_str(&file_stem_recase.pascal_case());
                     Ok(result)
                 } else {
@@ -95,7 +95,7 @@ impl AssetMetadata {
 
                 let relative_asset_path = relative_asset_path.to_string_lossy().to_string();
                 if !relative_asset_path.is_empty() {
-                    result.push_str(&ReCase::new(relative_asset_path).dot_case());
+                    result.push_str(&ReCase::new(&relative_asset_path).dot_case());
                     result.push('.');
                 }
                 result.push_str(&file_stem_recase.camel_case());

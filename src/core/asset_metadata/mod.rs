@@ -61,7 +61,7 @@ mod tests {
     fn parse_pubspec_yaml_assets_can_work() {
         // Arrange
         let test_artifact_directory = get_test_artifact_directory().unwrap();
-        let unique_id = uuid::Uuid::new_v4();
+        let unique_id = uuid::Uuid::now_v7();
         let test_artifact_directory = test_artifact_directory.join(unique_id.to_string());
         std::fs::create_dir_all(&test_artifact_directory).unwrap();
         fs_extra::dir::copy(

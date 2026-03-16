@@ -66,7 +66,7 @@ mod tests {
     async fn list_unused_return_unused_assets_exist_error_when_requested() {
         // Arrange
         let test_artifact_directory = get_test_artifact_directory().unwrap();
-        let unique_id = uuid::Uuid::new_v4();
+        let unique_id = uuid::Uuid::now_v7();
         let test_artifact_directory = test_artifact_directory.join(unique_id.to_string());
         std::fs::create_dir_all(&test_artifact_directory).unwrap();
         fs_extra::dir::copy(
